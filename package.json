@@ -1,0 +1,36 @@
+{
+  "name": "ecommerce-load",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Real-world Cloud SQL Postgres workload for comparing database triage systems",
+  "license": "MIT",
+  "packageManager": "npm@11.6.2",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "run:app": "turbo run run:app",
+    "stop:app": "pm2 delete ecosystem.config.cjs || true",
+    "restart:app": "pm2 reload ecosystem.config.cjs --update-env",
+    "status:app": "pm2 status",
+    "logs:app": "pm2 logs --lines 60",
+    "infra:up": "turbo run up --filter=@ecommerce-load/infra",
+    "infra:down": "turbo run down --filter=@ecommerce-load/infra",
+    "infra:reset": "turbo run reset --filter=@ecommerce-load/infra",
+    "db:setup": "turbo run db:setup",
+    "build": "turbo run build",
+    "workload": "turbo run workload",
+    "loadtest": "turbo run loadtest --",
+    "workload:baseline": "turbo run workload:baseline --",
+    "workload:anomaly": "turbo run workload:anomaly --",
+    "workload:timeline": "turbo run workload:timeline --",
+    "sale": "turbo run sale --"
+  },
+  "devDependencies": {
+    "pm2": "^7.0.3",
+    "turbo": "^2.5.8"
+  }
+}

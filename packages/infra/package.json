@@ -1,0 +1,14 @@
+{
+  "name": "@ecommerce-load/infra",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Local infrastructure dependencies (Postgres, Redis) for the Medusa application",
+  "scripts": {
+    "up": "if [ \"$SKIP_LOCAL_INFRA\" = \"1\" ]; then echo 'SKIP_LOCAL_INFRA=1 — using managed Postgres/Redis, not starting containers.'; else docker compose up -d --wait; fi",
+    "down": "if [ \"$SKIP_LOCAL_INFRA\" = \"1\" ]; then echo 'SKIP_LOCAL_INFRA=1 — nothing local to stop.'; else docker compose down; fi",
+    "reset": "docker compose down -v",
+    "ps": "docker compose ps",
+    "logs": "docker compose logs -f",
+    "psql": "docker compose exec postgres psql -U medusa -d medusa"
+  }
+}

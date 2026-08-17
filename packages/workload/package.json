@@ -1,0 +1,25 @@
+{
+  "name": "@ecommerce-load/workload",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Workload scripts that drive the Medusa application to generate realistic query load",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "workload": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "loadtest": "tsx src/loadtest.ts",
+    "workload:baseline": "tsx src/baseline.ts",
+    "workload:anomaly": "tsx src/anomaly.ts",
+    "workload:timeline": "tsx src/timeline.ts",
+    "sale": "tsx src/sale.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.11",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

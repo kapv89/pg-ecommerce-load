@@ -1,0 +1,6 @@
+.env
+/uploads
+medusa-db.sql
+.medusa
+.cache
+logs/

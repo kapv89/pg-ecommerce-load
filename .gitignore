@@ -1,0 +1,20 @@
+node_modules/
+.turbo/
+dist/
+build/
+.medusa/
+coverage/
+
+.env
+.env.local
+*.log
+
+# Deployment credentials for the GCP VM (Cloud SQL / Memorystore). See vm.env.example.
+vm.env
+
+# Output of vm-run-load.sh: driver logs and pg_stat_statements snapshots.
+runs/
+
+.DS_Store
+.idea/
+*.tsbuildinfo

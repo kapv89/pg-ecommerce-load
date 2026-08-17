@@ -1,0 +1,90 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "stream",
+  "tasks": {
+    "up": {
+      "cache": false
+    },
+    "down": {
+      "cache": false
+    },
+    "reset": {
+      "cache": false
+    },
+    "db:setup": {
+      "cache": false,
+      "dependsOn": [
+        "@ecommerce-load/infra#up"
+      ]
+    },
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".medusa/**",
+        "dist/**"
+      ]
+    },
+    "run:app": {
+      "cache": false,
+      "dependsOn": [
+        "db:setup",
+        "build"
+      ]
+    },
+    "workload": {
+      "cache": false,
+      "dependsOn": [
+        "@ecommerce-load/infra#up"
+      ]
+    },
+    "loadtest": {
+      "cache": false,
+      "dependsOn": [
+        "@ecommerce-load/infra#up"
+      ]
+    },
+    "workload:baseline": {
+      "cache": false,
+      "dependsOn": [
+        "@ecommerce-load/infra#up"
+      ]
+    },
+    "workload:anomaly": {
+      "cache": false,
+      "dependsOn": [
+        "@ecommerce-load/infra#up"
+      ]
+    },
+    "workload:timeline": {
+      "cache": false,
+      "dependsOn": [
+        "@ecommerce-load/infra#up"
+      ]
+    },
+    "sale": {
+      "cache": false,
+      "dependsOn": [
+        "@ecommerce-load/infra#up"
+      ]
+    }
+  },
+  "globalPassThroughEnv": [
+    "MEDUSA_SERVER_INSTANCES",
+    "MEDUSA_WORKER_INSTANCES",
+    "MEDUSA_WORKER_PORT_BASE",
+    "DB_CONNECTION_BUDGET",
+    "PORT",
+    "MEDUSA_URL",
+    "ADMIN_EMAIL",
+    "ADMIN_PASSWORD",
+    "WORKLOAD_DURATION",
+    "NODE_ENV",
+    "DATABASE_URL",
+    "REDIS_URL",
+    "DB_SSL",
+    "REDIS_DB_ISOLATION",
+    "SKIP_LOCAL_INFRA"
+  ]
+}

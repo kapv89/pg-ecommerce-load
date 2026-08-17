@@ -1,0 +1,66 @@
+name: ecommerce-load
+
+services:
+  postgres:
+    image: postgres:${POSTGRES_VERSION:-18}
+    container_name: ecommerce-load-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-medusa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-medusa}
+      POSTGRES_DB: ${POSTGRES_DB:-medusa}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    # pg_stat_statements is the surface both triage systems read, so it is on from
+    # the start. track=all also captures statements inside functions, and the raised
+    # max keeps the 300-500 distinct normalized queries we are targeting from being
+    # evicted. See prompts/cms-choice.md for why the Postgres major version matters.
+    command:
+      - postgres
+      # The image default of 100 is below what the pm2 cluster idles at: every
+      # server and worker process opens its own pool, so the total is
+      # (instances x pool_max). Keep this above DB_CONNECTION_BUDGET in
+      # ecosystem.config.cjs, with room for psql and the seed scripts.
+      #
+      # Note that connection slots are not free — Postgres reserves per-backend
+      # memory whether or not the slot is used — so this is headroom for a large
+      # multicore VM rather than a target to fill.
+      - -c
+      - max_connections=${POSTGRES_MAX_CONNECTIONS:-900}
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+      - -c
+      - pg_stat_statements.max=10000
+      - -c
+      - pg_stat_statements.track=all
+      - -c
+      - pg_stat_statements.track_utility=off
+    volumes:
+      # Postgres 18+ images want a single mount at /var/lib/postgresql and place the
+      # cluster in a major-version subdirectory; mounting /var/lib/postgresql/data
+      # as on older majors makes the container refuse to start.
+      - postgres-data:/var/lib/postgresql
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-medusa} -d ${POSTGRES_DB:-medusa}"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  redis:
+    image: redis:${REDIS_VERSION:-8-alpine}
+    container_name: ecommerce-load-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  postgres-data:
+  redis-data:
